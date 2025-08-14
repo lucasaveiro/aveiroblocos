@@ -1,4 +1,5 @@
 
+import { Span } from "next/dist/trace";
 import Link from "next/link";
 
 export default function Footer() {
@@ -14,9 +15,10 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-medium">Contato</h4>
           <ul className="text-sm mt-2 space-y-2 opacity-90">
-            <li><span>Endereço:</span> <span>{process.env.COMPANY_ADDRESS || "Estrada Municipal dos Aveiros, 300</br>Jardim Andorinhas - Campinas / SP - CEP: 13101-499"}</span></li>
-            <li><span>E-mail:</span> <a href={`mailto:${process.env.COMPANY_EMAIL || ""}`} className="underline">{process.env.COMPANY_EMAIL || "vendas@aveiroblocos.com.br"}</a></li>
-            <li><span>Telefone:</span> <a href={`tel:${process.env.COMPANY_PHONE || ""}`} className="underline">{process.env.COMPANY_PHONE || "(19) 99400-7699"}</a></li>
+            <li><span>Endereço:</span> <span>{"Estrada Municipal dos Aveiros, 300"}</span></li>
+            <li><span>Endereço:</span> <span>{"Jardim Andorinhas - Campinas / SP - CEP: 13101-499"}</span></li>
+            <li><span>E-mail:</span> <span>{"vendas@aveiroblocos.com.br"}</span></li>
+            <li><span>Telefone:</span> <span>{"(19) 99400-7699 / (19) 3255-5115"}</span></li>
           </ul>
         </div>
         <div>

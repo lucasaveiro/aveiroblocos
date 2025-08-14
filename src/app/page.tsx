@@ -14,17 +14,36 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[72vh] grid place-items-center bg-[url('/hero.jpg')] bg-cover bg-center">
-        <div className="absolute inset-0 hero-overlay" />
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white">
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight">Blocos de concreto com padrão industrial</h1>
-          <p className="mt-4 text-white/90">28 anos de experiência, tecnologia e compromisso com a qualidade para sua obra.</p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <Link href="/#produtos" className="rounded-xl bg-white text-primary-800 px-5 py-3 font-medium hover:opacity-90">Ver produtos</Link>
-            <Link href="/produtos" className="rounded-xl border border-white px-5 py-3 font-medium hover:bg-white hover:text-primary-800">Loja</Link>
-          </div>
-        </div>
-      </section>
+<section
+  className="relative min-h-[72vh] grid place-items-center bg-[url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center"
+  >
+    {/* Overlay escuro */}
+    <div className="absolute inset-0 bg-black/50" /> 
+
+    {/* Conteúdo */}
+    <div className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white">
+      <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+        Blocos de concreto com padrão industrial
+      </h1>
+      <p className="mt-4 text-white/90">
+        28 anos de experiência, tecnologia e compromisso com a qualidade para sua obra.
+      </p>
+      <div className="mt-6 flex items-center justify-center gap-3">
+        <Link
+          href="/#produtos"
+          className="rounded-xl bg-white text-primary-800 px-5 py-3 font-medium hover:opacity-90"
+        >
+          Ver produtos
+        </Link>
+        <Link
+          href="/produtos"
+          className="rounded-xl border border-white px-5 py-3 font-medium hover:bg-white hover:text-primary-800"
+        >
+          Loja
+        </Link>
+    </div>
+  </div>
+</section>
 
       {/* Produtos (grid resumida) */}
       <section id="produtos" className="bg-graybrand-50">

@@ -1,56 +1,130 @@
-import Link from "next/link";
-import ProductCard from "@/components/ProductCard";
-import Stats from "@/components/Stats";
-import CoursesPromo from "@/components/CoursesPromo";
+// src/app/dashboard/page.tsx
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase-server";
 
-const mockProducts = [
-  { id: "1", title: "Bloco Estrutural 14x19x39", price: 3.49, image: null, slug: "bloco-estrutural-14" },
-  { id: "2", title: "Bloco Vedação 9x19x39", price: 2.29, image: null, slug: "bloco-vedacao-9" },
-  { id: "3", title: "Canaleta 14x19x39", price: 4.19, image: null, slug: "canaleta-14" },
-  { id: "4", title: "Meio Bloco 14x19x19", price: 2.10, image: null, slug: "meio-bloco-14" }
-];
+export const dynamic = "force-dynamic"; // evita cache; garante checagem de sessão a cada requisição
 
-export default function Home() {
+// Server Action: Sign out
+export async function signOutAction() {
+  "use server";
+  const supabase = createClient();
+  await supabase.auth.signOut();
+  redirect("/"); // volta para a home após sair
+}
+
+export default async function Dashboard() {
+  const supabase = createClient();
+
+  // Garante sessão: se não tiver usuário -> /login
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // (Opcional) Carregue dados do usuário/empresa aqui via Supabase se quiser
+
   return (
-    <>
-      {/* Hero */}
-      <section className="relative min-h-[72vh] grid place-items-center bg-[url('/hero.jpg')] bg-cover bg-center">
-        <div className="absolute inset-0 hero-overlay" />
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white">
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight">Blocos de concreto com padrão industrial</h1>
-          <p className="mt-4 text-white/90">28 anos de experiência, tecnologia e compromisso com a qualidade para sua obra.</p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <Link href="/#produtos" className="rounded-xl bg-white text-primary-800 px-5 py-3 font-medium hover:opacity-90">Ver produtos</Link>
-            <Link href="/produtos" className="rounded-xl border border-white px-5 py-3 font-medium hover:bg-white hover:text-primary-800">Loja</Link>
+    <section className="max-w-7xl mx-auto px-4 py-10">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-semibold text-primary-700">
+            Painel da Fábrica
+          </h1>
+          <p className="text-sm text-graybrand-600 mt-1">
+            Bem-vindo, <span className="font-medium">{user.email}</span>
+          </p>
+        </div>
+
+        <form action={signOutAction}>
+          <button
+            className="rounded-xl border border-graybrand-300 px-4 py-2 text-sm hover:bg-graybrand-50"
+            type="submit"
+          >
+            Sair
+          </button>
+        </form>
+      </div>
+
+      {/* Cards principais */}
+      <div className="grid md:grid-cols-3 gap-6 mt-8">
+        {/* Produtos */}
+        <div className="bg-white border border-graybrand-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-primary-700">Produtos</h2>
+          <p className="text-sm text-graybrand-600 mt-2">
+            Gerencie catálogo, preços e disponibilidade.
+          </p>
+          {/* Enquanto não existir CRUD dedicado, link para a listagem pública */}
+          <a
+            href="/produtos"
+            className="inline-block mt-4 rounded-xl border border-primary-500 text-primary-600 px-4 py-2 hover:bg-primary-500 hover:text-white transition"
+          >
+            Ver catálogo
+          </a>
+          <div className="mt-3 text-xs text-graybrand-500">
+            * Área de gestão (CRUD) em breve
           </div>
         </div>
-      </section>
 
-      {/* Produtos (grid resumida) */}
-      <section id="produtos" className="bg-graybrand-50">
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="flex items-end justify-between">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary-700">Produtos</h2>
-            <Link href="/produtos" className="text-sm underline">Ver todos</Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-            {mockProducts.map(p => (
-              <ProductCard key={p.id} {...p} />
-            ))}
-          </div>
+        {/* Pedidos */}
+        <div className="bg-white border border-graybrand-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-primary-700">Pedidos</h2>
+          <p className="text-sm text-graybrand-600 mt-2">
+            Acompanhe status e histórico de vendas.
+          </p>
+          <button
+            disabled
+            className="inline-block mt-4 rounded-xl border border-graybrand-300 text-graybrand-500 px-4 py-2 cursor-not-allowed"
+            title="Em breve"
+          >
+            Em breve
+          </button>
         </div>
-      </section>
 
-      {/* Números */}
-      <Stats stats={[
-        { label: "Blocos vendidos", value: "12.450.000+" },
-        { label: "Anos de mercado", value: "28" },
-        { label: "Obras atendidas", value: "3.200+" },
-        { label: "Satisfação", value: "98%" }
-      ]} />
+        {/* Cursos */}
+        <div className="bg-white border border-graybrand-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-primary-700">Cursos</h2>
+          <p className="text-sm text-graybrand-600 mt-2">
+            Divulgue e gerencie capacitações da fábrica.
+          </p>
+          <a
+            href="/#cursos"
+            className="inline-block mt-4 rounded-xl border border-primary-500 text-primary-600 px-4 py-2 hover:bg-primary-500 hover:text-white transition"
+          >
+            Ver seção de cursos
+          </a>
+        </div>
+      </div>
 
-      {/* Cursos */}
-      <CoursesPromo />
-    </>
+      {/* KPIs simples (mock) */}
+      <div className="grid md:grid-cols-4 gap-4 mt-10">
+        {[
+          { label: "Pedidos (30d)", value: "—" },
+          { label: "Ticket médio", value: "—" },
+          { label: "Produtos ativos", value: "—" },
+          { label: "Clientes", value: "—" },
+        ].map((kpi) => (
+          <div
+            key={kpi.label}
+            className="bg-graybrand-50 border border-graybrand-200 rounded-2xl p-5 text-center"
+          >
+            <div className="text-2xl font-bold text-primary-600">{kpi.value}</div>
+            <div className="text-xs text-graybrand-600 mt-1">{kpi.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Ajuda / próximos passos */}
+      <div className="mt-10 bg-primary-900 text-white rounded-2xl p-6">
+        <h3 className="text-lg font-semibold">Próximos passos</h3>
+        <ul className="list-disc list-inside text-white/90 text-sm mt-2 space-y-1">
+          <li>Adicionar CRUD de produtos nesta área.</li>
+          <li>Conectar pagamentos (Stripe/Mercado Pago) e carrinho.</li>
+          <li>Relatórios de pedidos e exportação.</li>
+        </ul>
+      </div>
+    </section>
   );
 }
