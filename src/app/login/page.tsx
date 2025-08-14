@@ -1,10 +1,10 @@
-
 "use client";
+
 import { useState } from "react";
-import { createClient } from "@/lib/supabase-client";
+// Força execução apenas em runtime (evita prerender estático quebrar sem env):
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
-  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -12,6 +12,16 @@ export default function LoginPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Lazy import para não avaliar o cliente no build:
+    const { createClient } = await import("@/lib/supabase-client");
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      setError("Configuração do Supabase ausente. Defina as variáveis de ambiente no Netlify.");
+      return;
+    }
+
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: (process.env.NEXT_PUBLIC_SITE_URL || "") + "/dashboard" }

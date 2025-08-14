@@ -3,6 +3,10 @@ import { createClient } from "@/lib/supabase-server";
 
 type Props = { params: { slug: string } };
 
+// src/app/produtos/page.tsx
+export const dynamic = "force-dynamic";
+
+
 export default async function ProdutoPage({ params }: Props) {
   const { slug } = params;
 
