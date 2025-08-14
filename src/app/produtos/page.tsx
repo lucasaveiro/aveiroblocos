@@ -1,36 +1,46 @@
-
-import ProductCard from "@/components/ProductCard";
+// src/app/produtos/[slug]/page.tsx
 import { createClient } from "@/lib/supabase-server";
 
-export const revalidate = 60;
+type Props = { params: { slug: string } };
 
-export default async function Produtos() {
-  let products: any[] = [];
-  try {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("id,title,price,image_url,slug")
-      .eq("active", true)
-      .order("title");
-    if (error) throw error;
-    products = (data || []).map((p: any) => ({
-      id: p.id, title: p.title, price: Number(p.price), image: p.image_url, slug: p.slug
-    }));
-  } catch {
-    products = [
-      { id: "1", title: "Bloco Estrutural 14x19x39", price: 3.49, image: null, slug: "bloco-estrutural-14" },
-      { id: "2", title: "Bloco Vedação 9x19x39", price: 2.29, image: null, slug: "bloco-vedacao-9" },
-      { id: "3", title: "Canaleta 14x19x39", price: 4.19, image: null, slug: "canaleta-14" },
-      { id: "4", title: "Meio Bloco 14x19x19", price: 2.10, image: null, slug: "meio-bloco-14" }
-    ];
-  }
+export default async function ProdutoPage({ params }: Props) {
+  const { slug } = params;
+
+  // Tente por slug; se você guardar só id, adapte a query:
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, title, price, image_url, description, slug")
+    .or(`slug.eq.${slug},id.eq.${slug}`) // aceita slug OU id simples
+    .limit(1)
+    .single();
+
+  const p = data || {
+    title: "Produto",
+    price: 0,
+    image_url: null,
+    description: "Detalhes em breve.",
+  };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-12">
-      <h1 className="text-2xl md:text-3xl font-semibold text-primary-700">Todos os produtos</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-        {products.map((p) => <ProductCard key={p.id} {...p} />)}
+    <section className="max-w-5xl mx-auto px-4 py-12">
+      <h1 className="text-2xl md:text-3xl font-semibold text-primary-700">
+        {p.title}
+      </h1>
+      <p className="mt-4 text-primary-600">R$ {Number(p.price).toFixed(2)}</p>
+      <div className="mt-6 grid md:grid-cols-2 gap-6">
+        <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden">
+          {p.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full grid place-items-center text-gray-400">Sem imagem</div>
+          )}
+        </div>
+        <div>
+          <p className="text-gray-700">{p.description || "Descrição não informada."}</p>
+          {/* Botões de comprar / adicionar ao carrinho entram aqui depois */}
+        </div>
       </div>
     </section>
   );
