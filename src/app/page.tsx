@@ -2,48 +2,43 @@ import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Stats from "@/components/Stats";
 import CoursesPromo from "@/components/CoursesPromo";
+import { fetchProducts } from "@/lib/products";
 
-const mockProducts = [
-  { id: "1", title: "Bloco Estrutural 14x19x39", price: 3.49, image: null, slug: "bloco-estrutural-14" },
-  { id: "2", title: "Bloco Vedação 9x19x39", price: 2.29, image: null, slug: "bloco-vedacao-9" },
-  { id: "3", title: "Canaleta 14x19x39", price: 4.19, image: null, slug: "canaleta-14" },
-  { id: "4", title: "Meio Bloco 14x19x19", price: 2.10, image: null, slug: "meio-bloco-14" }
-];
-
-export default function Home() {
+export default async function Home() {
+  const products = await fetchProducts();
   return (
     <>
       {/* Hero */}
-<section
-  className="relative min-h-[72vh] grid place-items-center bg-[url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center"
-  >
-    {/* Overlay escuro */}
-    <div className="absolute inset-0 bg-black/50" /> 
+      <section
+        className="relative min-h-[72vh] grid place-items-center bg-[url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center"
+      >
+        {/* Overlay escuro */}
+        <div className="absolute inset-0 bg-black/50" />
 
-    {/* Conteúdo */}
-    <div className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white">
-      <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-        Blocos de concreto com padrão industrial
-      </h1>
-      <p className="mt-4 text-white/90">
-        28 anos de experiência, tecnologia e compromisso com a qualidade para sua obra.
-      </p>
-      <div className="mt-6 flex items-center justify-center gap-3">
-        <Link
-          href="/#produtos"
-          className="rounded-xl bg-white text-primary-800 px-5 py-3 font-medium hover:opacity-90"
-        >
-          Ver produtos
-        </Link>
-        <Link
-          href="/produtos"
-          className="rounded-xl border border-white px-5 py-3 font-medium hover:bg-white hover:text-primary-800"
-        >
-          Loja
-        </Link>
-    </div>
-  </div>
-</section>
+        {/* Conteúdo */}
+        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white">
+          <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+            Blocos de concreto com padrão industrial
+          </h1>
+          <p className="mt-4 text-white/90">
+            28 anos de experiência, tecnologia e compromisso com a qualidade para sua obra.
+          </p>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <Link
+              href="/#produtos"
+              className="rounded-xl bg-white text-primary-800 px-5 py-3 font-medium hover:opacity-90"
+            >
+              Ver produtos
+            </Link>
+            <Link
+              href="/produtos"
+              className="rounded-xl border border-white px-5 py-3 font-medium hover:bg-white hover:text-primary-800"
+            >
+              Loja
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Produtos (grid resumida) */}
       <section id="produtos" className="bg-graybrand-50">
@@ -53,9 +48,16 @@ export default function Home() {
             <Link href="/produtos" className="text-sm underline">Ver todos</Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-            {mockProducts.map(p => (
-              <ProductCard key={p.id} {...p} />
-            ))}
+              {products?.map(p => (
+                <ProductCard
+                  key={p.id}
+                  id={p.id}
+                  title={p.title}
+                  price={p.price}
+                  image={p.image_url}
+                  slug={p.slug}
+                />
+              ))}
           </div>
         </div>
       </section>
