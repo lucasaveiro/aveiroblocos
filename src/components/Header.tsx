@@ -6,7 +6,7 @@ export default function Header() {
     <header className="w-full sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-graybrand-200">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="text-primary-500 font-semibold text-lg">
-          Fábrica de Blocos
+          Aveiro Blocos
         </Link>
         <nav className="flex items-center gap-6 text-sm">
           <Link href="/#produtos" className="hover:text-primary-500">Produtos</Link>
