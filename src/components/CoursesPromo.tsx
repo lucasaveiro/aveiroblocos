@@ -11,8 +11,8 @@ export default function CoursesPromo() {
             Aprenda melhores práticas de produção, controle de qualidade e gestão para fábricas de blocos de concreto.
           </p>
           <div className="mt-6 flex gap-3">
-            <Link href="/cursos" className="rounded-xl bg-white text-primary-800 px-4 py-2 hover:opacity-90">Ver cursos</Link>
-            <Link href="/contato" className="rounded-xl border border-white px-4 py-2 hover:bg-white hover:text-primary-800">Fale conosco</Link>
+            <Link href="/#cursos" className="rounded-xl bg-white text-primary-800 px-4 py-2 hover:opacity-90">Ver cursos</Link>
+            <Link href="/#contato" className="rounded-xl border border-white px-4 py-2 hover:bg-white hover:text-primary-800">Fale conosco</Link>
           </div>
         </div>
         <div className="bg-primary-800/60 border border-primary-700 rounded-2xl p-6">
